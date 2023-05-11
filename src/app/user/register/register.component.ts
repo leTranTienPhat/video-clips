@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms'
+import IUser from 'src/app/models/user.model';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-register',
@@ -7,6 +9,10 @@ import { FormGroup, FormControl, Validators } from '@angular/forms'
   styleUrls: ['./register.component.css']
 })
 export class RegisterComponent {
+  constructor(private auth: AuthService) { }
+
+  inSubmission = false
+
   registerForm = new FormGroup({
     name: new FormControl('', [
       Validators.required,
@@ -16,7 +22,7 @@ export class RegisterComponent {
       Validators.required,
       Validators.email,
     ]),
-    age: new FormControl('', [
+    age: new FormControl<number | null>(null, [
       Validators.required,
       Validators.min(18),
       Validators.max(120)
@@ -38,9 +44,23 @@ export class RegisterComponent {
   alertMsg = "Your account is being created..."
   alertColor = 'blue'
 
-  register() {
+  async register() {
     this.showAlert = true
     this.alertMsg = "Your account is being created..."
     this.alertColor = 'blue'
+    this.inSubmission = true
+
+    try {
+      this.auth.createUser(this.registerForm.value as IUser)
+    } catch (err) {
+      console.log(err)
+      this.alertMsg = "Error happened while register the account. Please try again"
+      this.alertColor = 'red'
+      this.inSubmission = false
+      return
+    }
+    this.alertMsg = "Your account has been created!"
+    this.alertColor = 'green'
+
   }
 }
