@@ -11,9 +11,7 @@ import { EmailTaken } from '../validators/email-taken';
   styleUrls: ['./register.component.css']
 })
 export class RegisterComponent {
-  constructor(private auth: AuthService, private emailTaken: EmailTaken) {
-    console.log(this.emailTaken.validate)
-  }
+  constructor(private auth: AuthService, private emailTaken: EmailTaken) { }
 
   registerForm = new FormGroup({
     name: new FormControl('', [
